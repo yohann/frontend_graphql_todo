@@ -50,7 +50,7 @@ function App() {
 
   const triggerAddTask = async (name, description) => {
     await addTask(name, description);
-    fetchData();
+    triggerSetFilter('in_progress');
   };
 
   const triggerDeleteTask = async (id) => {
