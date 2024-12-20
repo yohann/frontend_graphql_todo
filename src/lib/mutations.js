@@ -15,3 +15,9 @@ export const TOGGLE_TASK = (id) => `
     toggleTask(id: "${id}")
   }
 `;
+
+export const UPDATE_TASK = (id, name, description) => `
+  mutation UpdateTask{
+    updateTask(id: "${id}", name: "${name}", description: "${description}")
+  }
+`;

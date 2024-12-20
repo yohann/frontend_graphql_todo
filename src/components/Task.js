@@ -16,14 +16,13 @@ function Task({ text, id, completed, deleteTask, toggleTask, updateTask, isEditi
     e.preventDefault();
     const trimmedText = newText.trim();
     if (trimmedText) {
-      updateTask(trimmedText, id);
+      updateTask(id, trimmedText);
       setCurrentlyEditing("");
     }
   };
 
   const handleEditInputChange = (e) => {
     setNewText(e.target.value);
-    updateTask(e.target.value, id);
   };
 
   const handleEditButtonClick = () => {
@@ -43,11 +42,12 @@ function Task({ text, id, completed, deleteTask, toggleTask, updateTask, isEditi
         <span>{text}</span>
       </label>
       {isEditing && (
-        <form className="absolute left-7.5 top-2 bg-primary-400 outline-none border-0 border-b border-white" onSubmit={handleSubmit}>
+        <form className="absolute left-7.5 top-2 bg-primary-400 outline-none border-0 border-b text-black border-white" onSubmit={handleSubmit}>
           <input
             ref={editingInput}
             type="text"
             value={newText}
+            onBlur={handleSubmit}
             onChange={handleEditInputChange}
           />
           <button className="hidden" type="submit">Update</button>

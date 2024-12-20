@@ -9,6 +9,7 @@ import { fetchTasks } from "./components/services/fetchTasks";
 import { addTask } from "./components/services/addTask";
 import { removeTask } from "./components/services/removeTask";
 import { toggleTask } from "./components/services/toggleTask";
+import { updateTask } from "./components/services/updateTask";
 
 const FILTER_MAP = {
   all: "All",
@@ -21,7 +22,7 @@ function App() {
   const [error, setError] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [completedAll, setCompletedAll] = useState(false);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("in_progress");
   const [currentlyEditing, setCurrentlyEditing] = useState("");
 
   const fetchData = async (selectedFilter = null) => {
@@ -57,24 +58,14 @@ function App() {
     fetchData();
   };
 
-  const deleteAll = () => setTasks([]);
-
   const triggerToggleTask = async (id) => {
     await toggleTask(id);
     fetchData();
   };
 
-  const toggleAll = () => setTasks(tasks.map((task) => (
-    { ...task, completed: !task.completed }
-  )));
-
-  const triggerUpdateTask = (text, id) => setTasks(tasks.map((task) => (
-    task.id === id ? { ...task, text } : task
-  )));
-
-  const completeAll = () => {
-    setTasks(tasks.map((task) => ({ ...task, completed: !completedAll })));
-    setCompletedAll(!completedAll);
+  const triggerUpdateTask = async (id, name, description) => {
+    await updateTask(id, name, description);
+    fetchData();
   };
 
   const triggerSetFilter = async (filter) => {
@@ -118,11 +109,6 @@ function App() {
               />
             ))}
           </ul>
-          <div className="hidden">
-            <button onClick={deleteAll}>Delete All</button>
-            <button onClick={toggleAll}>Toggle All</button>
-            <button onClick={completeAll}>Complete All</button>
-          </div>
           <div>
             {filterList}
           </div>
