@@ -29,6 +29,7 @@ function Form({ addTask }) {
           id="todo"
           placeholder="Add New Task"
           aria-label="Add New Taask"
+          data-cy="new-task"
           value={todoText}
           onChange={(e) => setTaskText(e.target.value)}
         />

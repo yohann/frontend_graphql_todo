@@ -73,6 +73,7 @@ function App() {
       className={`px-3 py-1 ${key === filter ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
       onClick={() => triggerSetFilter(key)}
       aria-pressed={key === filter}
+      data-cy={`filter-${key}`}
     >
       <span className="sr-only">Show</span>
       <span>{FILTER_MAP[key]}</span>
