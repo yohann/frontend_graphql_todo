@@ -6,12 +6,12 @@ export const ADD_TASK = (name, description) => `
 
 export const REMOVE_TASK = (id) => `
   mutation DestroyTask{
-    destroyTask(taskId: "${id}")
+    destroyTask(id: "${id}")
   }
 `;
 
 export const TOGGLE_TASK = (id) => `
   mutation ToggleTask{
-    toggleTask(taskId: "${id}")
+    toggleTask(id: "${id}")
   }
 `;
