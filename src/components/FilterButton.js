@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-function FilterButton({ name, isPressed, setFilter }) {
+function FilterButton({ name, stateCd, isPressed, setFilter }) {
   return (
     <button
       className={`px-3 py-1 ${isPressed ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
-      onClick={() => setFilter(name)}
+      onClick={() => setFilter(stateCd)}
       aria-pressed={isPressed}
     >
       <span className="sr-only">Show</span>

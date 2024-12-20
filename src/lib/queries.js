@@ -1,7 +1,6 @@
-export const GET_TASKS = `
+export const GET_TASKS = (filter) => `
   query Task{
-    tasks {
-      id,
+    tasks(state: "${filter}") {
       name,
       description,
       stateCd

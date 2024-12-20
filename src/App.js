@@ -11,21 +11,22 @@ import { removeTask } from "./components/services/removeTask";
 import { toggleTask } from "./components/services/toggleTask";
 
 const FILTER_MAP = {
-  All: () => true,
-  Active: (task) => !task.completed,
-  Completed: (task) => task.completed
+  all: "All",
+  in_progress: "Active",
+  completed: "Completed",
 };
-
-const FILTER_NAMES = Object.keys(FILTER_MAP);
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [completedAll, setCompletedAll] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [currentlyEditing, setCurrentlyEditing] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = async (selectedFilter = null) => {
     try {
-      const response = await fetchTasks();
+      const response = await fetchTasks(selectedFilter || filter);
 
       const result = await response.json();
 
@@ -33,6 +34,7 @@ function App() {
         throw new Error(result.errors[0].message);
       }
 
+      console.log(result.data.tasks);
       setTasks(result.data.tasks);
       setLoading(false);
     } catch (error) {
@@ -44,24 +46,21 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
-  const [completedAll, setCompletedAll] = useState(false);
-  const [filter, setFilter] = useState("All");
-  const [currentlyEditing, setCurrentlyEditing] = useState("");
 
   const triggerAddTask = async (name, description) => {
-    addTask(name, description);
+    await addTask(name, description);
     fetchData();
   };
 
-  const triggerDeleteTask = (id) => {
-    removeTask(id);
+  const triggerDeleteTask = async (id) => {
+    await removeTask(id);
     fetchData();
   };
 
   const deleteAll = () => setTasks([]);
 
-  const triggerToggleTask = (id) => {
-    toggleTask(id);
+  const triggerToggleTask = async (id) => {
+    await toggleTask(id);
     fetchData();
   };
 
@@ -78,13 +77,21 @@ function App() {
     setCompletedAll(!completedAll);
   };
 
-  const filterList = FILTER_NAMES.map((name) => (
-    <FilterButton
-      name={name}
-      key={name}
-      isPressed={name === filter}
-      setFilter={setFilter}
-    />
+  const triggerSetFilter = async (filter) => {
+    setFilter(filter);
+    fetchData(filter);
+  }
+
+  const filterList = Object.keys(FILTER_MAP).map((key) => (
+    <button
+      className={`px-3 py-1 ${key === filter ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+      onClick={() => triggerSetFilter(key)}
+      aria-pressed={key === filter}
+    >
+      <span className="sr-only">Show</span>
+      <span>{FILTER_MAP[key]}</span>
+      <span className="sr-only">Tasks</span>
+    </button>
   ));
 
   if (loading) return <p>Loading...</p>;
@@ -97,12 +104,12 @@ function App() {
           <h2 className="text-white text-xl font-semibold mb-4">TO DO LIST</h2>
           <Form addTask={triggerAddTask} />
           <ul className="tasks">
-            {tasks.filter(FILTER_MAP[filter]).map(({ name, id, stateCd }) => (
+            {tasks.map(({ name, id, stateCd }) => (
               <Task
                 key={id}
                 text={name}
                 id={id}
-                completed={stateCd}
+                completed={stateCd == 'completed'}
                 deleteTask={triggerDeleteTask}
                 toggleTask={triggerToggleTask}
                 updateTask={triggerUpdateTask}
@@ -116,11 +123,9 @@ function App() {
             <button onClick={toggleAll}>Toggle All</button>
             <button onClick={completeAll}>Complete All</button>
           </div>
-          {tasks.length > 0 && (
-            <div>
-              {filterList}
-            </div>
-          )}
+          <div>
+            {filterList}
+          </div>
         </div>
       </div>
     </ApolloProvider>
