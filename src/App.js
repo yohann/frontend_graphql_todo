@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import FilterButton from "./components/FilterButton";
 import Form from "./components/Form";
 import Task from "./components/Task";
-import apolloClient from "./lib/apolloClient";
-import { ApolloProvider } from '@apollo/client';
-import { GET_TASKS } from './lib/queries';
 import { fetchTasks } from "./components/services/fetchTasks";
 import { addTask } from "./components/services/addTask";
 import { removeTask } from "./components/services/removeTask";
@@ -21,7 +17,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [completedAll, setCompletedAll] = useState(false);
   const [filter, setFilter] = useState("in_progress");
   const [currentlyEditing, setCurrentlyEditing] = useState("");
 
@@ -89,32 +84,30 @@ function App() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <div className="app-container bg-blue-800 flex h-screen">
-        <div className="m-auto bg-primary-600 white p-6 rounded-lg text-white max-w-md w-full">
-          <h2 className="text-white text-xl font-semibold mb-4">TO DO LIST</h2>
-          <Form addTask={triggerAddTask} />
-          <ul className="tasks">
-            {tasks.map(({ name, id, stateCd }) => (
-              <Task
-                key={id}
-                text={name}
-                id={id}
-                completed={stateCd == 'completed'}
-                deleteTask={triggerDeleteTask}
-                toggleTask={triggerToggleTask}
-                updateTask={triggerUpdateTask}
-                isEditing={id === currentlyEditing}
-                setCurrentlyEditing={setCurrentlyEditing}
-              />
-            ))}
-          </ul>
-          <div>
-            {filterList}
-          </div>
+    <div className="app-container bg-blue-800 flex h-screen">
+      <div className="m-auto bg-primary-600 white p-6 rounded-lg text-white max-w-md w-full">
+        <h2 className="text-white text-xl font-semibold mb-4">TO DO LIST</h2>
+        <Form addTask={triggerAddTask} />
+        <ul className="tasks">
+          {tasks.map(({ name, id, stateCd }) => (
+            <Task
+              key={id}
+              text={name}
+              id={id}
+              completed={stateCd == 'completed'}
+              deleteTask={triggerDeleteTask}
+              toggleTask={triggerToggleTask}
+              updateTask={triggerUpdateTask}
+              isEditing={id === currentlyEditing}
+              setCurrentlyEditing={setCurrentlyEditing}
+            />
+          ))}
+        </ul>
+        <div>
+          {filterList}
         </div>
       </div>
-    </ApolloProvider>
+    </div>
   );
 }
 
