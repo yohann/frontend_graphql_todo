@@ -1,7 +1,7 @@
 import { REMOVE_TASK } from '../../lib/mutations';
 
 export const removeTask = async (id) => {
-  const response = fetch('http://localhost:3000/graphql', {
+  const response = fetch('https://yohann-graphql-todo-list-bed98c446341.herokuapp.com/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
